@@ -95,7 +95,7 @@ def listar_precos(tipo_veiculo, codigo_marca, codigo_modelo, codigo_ano, cep):
 def buscar_servicos_bedrock(cep, modelo_veiculo):
     prompt = (f"Eu possuo um veículo do modelo {modelo_veiculo}. "
               f"Estou localizado no CEP {cep}, no Brasil. "
-              "Por favor, responda em português e liste os principais serviços automotivos disponíveis na região.")
+              "Por favor, responda em português e liste os principais serviços automotivos disponíveis na região com endereço e telefone")
     conversation = [{"role": "user", "content": [{"text": prompt}]}]
     try:
         response = client.converse(
@@ -104,7 +104,7 @@ def buscar_servicos_bedrock(cep, modelo_veiculo):
             inferenceConfig={"maxTokens": 512, "temperature": 0.5, "topP": 0.9},
         )
         response_text = response["output"]["message"]["content"][0]["text"]
-        print("\nServiços automotivos sugeridos na região do CEP:")
+        print("\nServiços automotivos Franqueados na região do CEP:")
         print(response_text)
     except (ClientError, Exception) as e:
         print(f"Erro ao buscar serviços automotivos via Bedrock: {e}")
@@ -119,29 +119,45 @@ def main():
 
     while True:
         print("\nEscolha uma opção:")
-        print("1. Consultar FIPE")
-        print("2. Sair")
+        print("1. Carros")
+        print("2. Motos")
+        print("3. Caminhões")
+        print("4. Sair")
         escolha = input("Digite o número da opção desejada: ")
 
         if escolha == "1":
-            tipo_veiculo = input("Digite o tipo de veículo (carros, motos, caminhões): ").strip().lower() or 'carros'
-            marcas = listar_marcas(tipo_veiculo)
-            if marcas:
-                codigo_marca = input("Digite o código da marca desejada: ")
-                modelos = listar_modelos(tipo_veiculo, codigo_marca)
-                if modelos:
-                    codigo_modelo = input("Digite o código do modelo desejado: ")
-                    anos = listar_anos(tipo_veiculo, codigo_marca, codigo_modelo)
-                    if anos:
-                        escolha = int(input("Digite o número do ano desejado: "))
-                        if 1 <= escolha <= len(anos):
-                            codigo_ano = anos[escolha - 1]['codigo']
-                            listar_precos(tipo_veiculo, codigo_marca, codigo_modelo, codigo_ano, cep)
+            tipo_veiculo = "carros"
         elif escolha == "2":
+            tipo_veiculo = "motos"
+        elif escolha == "3":
+            tipo_veiculo = "caminhoes"
+        elif escolha == "4":
             print("Encerrando o programa.")
             break
         else:
             print("Opção inválida. Tente novamente.")
+            continue
+
+        marcas = listar_marcas(tipo_veiculo)
+        if marcas:
+            codigo_marca = input("Digite o código da marca desejada: ")
+            modelos = listar_modelos(tipo_veiculo, codigo_marca)
+            if modelos:
+                codigo_modelo = input("Digite o código do modelo desejado: ")
+                anos = listar_anos(tipo_veiculo, codigo_marca, codigo_modelo)
+                if anos:
+                    escolha_ano = int(input("Digite o número do ano desejado: "))
+                    if 1 <= escolha_ano <= len(anos):
+                        codigo_ano = anos[escolha_ano - 1]['codigo']
+                        listar_precos(tipo_veiculo, codigo_marca, codigo_modelo, codigo_ano, cep)
+                    else:
+                        print("Ano selecionado inválido!")
+                else:
+                    print("Nenhum ano encontrado!")
+            else:
+                print("Nenhum modelo encontrado!")
+        else:
+            print("Nenhuma marca encontrada!")
 
 if __name__ == "__main__":
     main()
