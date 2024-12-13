@@ -1,0 +1,26 @@
+name: CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Install Vercel CLI
+      run: |
+        npm install -g vercel
+
+    - name: Login to Vercel
+      run: |
+        echo "${{ mIYEmL56lwhLpgSu8wC8gDm }}" | vercel login --token=$VERCEL_TOKEN
+
+    - name: Deploy to Vercel
+      run: |
+        vercel --prod --token=$VERCEL_TOKEN
