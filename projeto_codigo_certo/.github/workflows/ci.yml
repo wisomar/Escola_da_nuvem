@@ -24,7 +24,6 @@ jobs:
     - name: Install Dependencies
       run: |
         pip install -r requirements.txt
-
     - name: Run Tests
       run: |
         python -m unittest discover tests
@@ -43,6 +42,6 @@ jobs:
 
     - name: Deploy to Vercel
       env:
-        VERCEL_TOKEN: ${{ sewmIYEmL56lwhLpgSu8wC8gDm }}
+        VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       run: |
         vercel --prod --token=$VERCEL_TOKEN

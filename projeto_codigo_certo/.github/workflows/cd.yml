@@ -17,10 +17,8 @@ jobs:
       run: |
         npm install -g vercel
 
-    - name: Login to Vercel
-      run: |
-        echo "${{ mIYEmL56lwhLpgSu8wC8gDm }}" | vercel login --token=$VERCEL_TOKEN
-
     - name: Deploy to Vercel
+      env:
+        VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       run: |
         vercel --prod --token=$VERCEL_TOKEN
